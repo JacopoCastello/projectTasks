@@ -1,0 +1,2 @@
+InetSocketAddress is a Java class which is of the type (ip , port) or (hostname, port).
+netAddress used in netMessage.scala (under folder "Common" is of this type).
