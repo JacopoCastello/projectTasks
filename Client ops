@@ -1,1 +1,22 @@
 How are clients OPs defined, called and sent?
+
+
+Explanation of Future and Promises (used for the call and execution of the OPs): https://docs.scala-lang.org/overviews/core/futures.html#promises
+Future and Promises are used in systems where the results might not be available right away but it might take some time and we dont want
+to block the whole process and execution.
+
+Get, Put and Cas are defined into the ClientService.scala and they are called/triggered on itself and then handled by ClientService.scala
+by forwarding them to the server (through a NetMessage(src, dest, payload) which will redirect them to the right node.
+The OP request to the server is then added to "pending" untill a response is received or a timeout expires (not sure about the timeout).
+
+When a client is started a new instance of ClientService is initiated and it is handled by ctrl (case _start), a connection request is sent
+to the server ( a timeout bound is set), if the connection is established successfully the server responds with a ack of type 
+ConnectedAck(id, clustersize) and the client is notified of that.
+In this case a new instance of ClientConsole is created with argument ClientService.this ( the active instance of ClientService used by
+this client).
+It is through the ClientConsole that the client is able to input is OPs requests, handled by some parser which then call the get, put and
+cas methods specified into ClientService itself.
+
+The class Operation, Op, OperationResponse, etc are all defined in Operation.scala (in folder "Common") and make use of [optional] fields
+to include all OPs (get, put, cas).
+
